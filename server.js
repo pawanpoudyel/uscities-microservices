@@ -1,7 +1,7 @@
 // =============================================================================
 // EECE/CS 3093C Software Engineering — Lab 4
 // server.js — code skeleton provided by Phu Phung
-// complete implementation by [Your Name]
+// complete implementation by Pawan Poudyel
 // =============================================================================
 const express    = require('express');
 const app    = express();
@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 8080;
   }
 })();
 app.get('/', (req, res) => {
-  res.send('USCities-Microservices Gateway by [Your Name]');
+  res.send('USCities-Microservices Gateway by Pawan Poudyel');
 })
 
 app.get('/echo/:input', function (req, res) {
