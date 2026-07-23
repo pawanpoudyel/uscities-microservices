@@ -50,20 +50,42 @@ const fields = {
     zips: 1
 };
 
+// Search by ZIP code
 app.get(/^\/uscities-search\/(\d{1,5})$/, async (req, res) => {
-const zipCode = req.params[0];
-console.log(`Debug> zipCode= ${zipCode}`);
+  const zipCode = req.params[0];
+  console.log(`Debug> zipCode= ${zipCode}`);
 
-try {
-  const zipRegEx = new RegExp(zipCode);
-  const results = await uscities
-  .find({ zips: zipRegEx })
-  .project(fields)
-  .toArray();
-  res.json(results);
+  try {
+    const zipRegEx = new RegExp(zipCode);
 
+    const results = await uscities
+      .find({ zips: zipRegEx })
+      .project(fields)
+      .toArray();
+
+    res.json(results);
   } catch (error) {
     console.error('ZIP search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Search by city name
+app.get('/uscities-search/:city', async (req, res) => {
+  const city = req.params.city;
+  console.log(`Debug> city= ${city}`);
+
+  try {
+    const cityRegEx = new RegExp(city, 'i');
+
+    const results = await uscities
+      .find({ city: cityRegEx })
+      .project(fields)
+      .toArray();
+
+    res.json(results);
+  } catch (error) {
+    console.error('City search error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
