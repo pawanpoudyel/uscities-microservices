@@ -34,3 +34,36 @@ app.get('/echo/:input', function (req, res) {
   var input = req.params.input;
   res.send(input);
 });
+
+let uscities = mongoclient.db('uscities-microservices').collection('uscities');
+// "uscities-microservices" is the database name, "uscities" is the collection name
+// imported by mongo-import.js
+
+// Common fields projection
+const fields = {
+    _id: 0,
+    city: 1,
+    state_id: 1,
+    state_name: 1,
+    county_name: 1,
+    timezone: 1,
+    zips: 1
+};
+
+app.get(/^\/uscities-search\/(\d{1,5})$/, async (req, res) => {
+const zipCode = req.params[0];
+console.log(`Debug> zipCode= ${zipCode}`);
+
+try {
+  const zipRegEx = new RegExp(zipCode);
+  const results = await uscities
+  .find({ zips: zipRegEx })
+  .project(fields)
+  .toArray();
+  res.json(results);
+
+  } catch (error) {
+    console.error('ZIP search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
